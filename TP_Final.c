@@ -35,49 +35,39 @@ int main(int argc, char *argv[]){
         FILE *texto = fopen(direccion_texto,"r"); // Se abre el archivo de texto
         FILE *entrada = fopen(direccion_archivo_entrada,"a"); // Se abre el archivo de entrada
 
-        char linea_entrada[5000]; // Problema: El espacio es limitado
-
-        int j = 0; // Posicion de linea_entrada
         char c = fgetc(texto);
         char caracter_anterior = '\0';
 
         while(c != EOF){
 
             if(c >= 97 && c <= 122){
-                linea_entrada[j] = c;
+                fputc(c,entrada);
                 caracter_anterior = c;
-                j += 1;
             }
             else if(c >= 65 && c <=90){
-                linea_entrada[j] = c + 32;
+                fputc(c+32,entrada);
                 caracter_anterior = c + 32;
-                j += 1;
             }
             else if(c == '.' && caracter_anterior != '.'){
-                linea_entrada[j] = '\n';
+                fputc('\n',entrada);
                 caracter_anterior = c;
-                j += 1;
             }
             else if(c == '\n' && caracter_anterior != '.'){
-                linea_entrada[j] = ' ';
+                fputc(' ',entrada);
                 caracter_anterior = c;
-                j += 1;
             }
             else if(c == ' ' && caracter_anterior != '\n' && caracter_anterior != '.'){
-                linea_entrada[j] = ' ';
+                fputc(' ',entrada);
                 caracter_anterior = c;
-                j += 1;
             }
             else if (c >= 48 && c <= 57){
-                linea_entrada[j] = c;
+                fputc(c,entrada);
                 caracter_anterior = c;
-                j += 1;
             }
 
             c = fgetc(texto);
         }
-    
-    fputs(linea_entrada,entrada);
+
     fclose(texto);
     fclose(entrada);
 
@@ -88,16 +78,16 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
+
 // Calamaro: Cuando hay un caracter especial(como ':' o ',') y un salto de linea 
 // seguido se genera un doble espacio
 
 // Canciones para ninos : Curado
 
-// Diego Torres : Caracter extraño en linea 32
+// Diego Torres : Curado
 
-// Fabiana Cantilo : Fuga de un fragmento de cancion en otra
+// Fabiana Cantilo : Curado
 
 // Fito Paez : Curado
 
-// Luis Spinetta : Caracter extraño al final del archivo (tal vez tenga que ver
-// con que es el ultimo en procesarse)
+// Luis Spinetta : Curado

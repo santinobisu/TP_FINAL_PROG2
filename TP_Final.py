@@ -1,16 +1,73 @@
 
-def encontrar_mayor_diccionario(dict):
+def crearDiccionario(posicion_palabra_frase,lista_palabras_entrada,lista_palabras_frase):
 
-    print(dict)
+    diccionario_apariciones = {} #Creo un diccionario de la forma {"Palabra":Apariciones de la palabra}
+            
+    for indice in range(len(lista_palabras_entrada)): #Busco la palabra a encontrar
+        
+        #El algoritmo se basa en buscar igualdad de palabra precedente o siguiente de '_' dentro de las palabras de entrada
+        #y agregar la palabra siguiente o precedente en entrada, correspondientemente al diccionario junto a su cantidad de
+        #apariciones
 
-    keys_max_val = ""
-    max_value = max(dict.values())
+        if posicion_palabra_frase == 0: #Caso '_' sea la primera palabra
 
-    for key, value in dict.items():
-        if value == max_value:
-            keys_max_val = key
+            if lista_palabras_entrada[indice] == lista_palabras_frase[1]:
 
-    return keys_max_val
+                if not lista_palabras_entrada[indice-1] in diccionario_apariciones:
+                    diccionario_apariciones[lista_palabras_entrada[indice-1]] = 1 
+                        
+                else:
+                    diccionario_apariciones[lista_palabras_entrada[indice-1]] += 1 
+
+        elif posicion_palabra_frase == (len(lista_palabras_frase) - 1): #Caso '_' sea la ultima palabra
+
+            if lista_palabras_entrada[indice] == lista_palabras_frase[-2]: 
+
+                if not lista_palabras_entrada[indice+1] in diccionario_apariciones:
+                    diccionario_apariciones[lista_palabras_entrada[indice+1]] = 1 
+                        
+                else:
+                    diccionario_apariciones[lista_palabras_entrada[indice+1]] += 1 
+        
+        else: # Caso '_' no sea ni la primera ni la ultima palabra
+
+            if lista_palabras_entrada[indice] == lista_palabras_frase[posicion_palabra_frase + 1]:
+
+                if not lista_palabras_entrada[indice-1] in diccionario_apariciones:
+                    diccionario_apariciones[lista_palabras_entrada[indice-1]] = 1 
+                        
+                else:
+                    diccionario_apariciones[lista_palabras_entrada[indice-1]] += 1
+
+            elif lista_palabras_entrada[indice] == lista_palabras_frase[posicion_palabra_frase - 1]:
+
+                if not lista_palabras_entrada[indice+1] in diccionario_apariciones:
+                    diccionario_apariciones[lista_palabras_entrada[indice+1]] = 1 
+                        
+                else:
+                    diccionario_apariciones[lista_palabras_entrada[indice+1]] += 1
+
+    return diccionario_apariciones
+
+
+
+def encontrarPalabra(diccionario_apariciones):
+
+    valores_diccionario = list(diccionario_apariciones.values()) #Creo una lista de los valores
+    palabras_diccionario = list(diccionario_apariciones.keys()) #Y una de sus llaves que son las palabras
+
+    mayor = 0
+    posicion_palabra_diccionario = 0
+
+    for indice in range(len(valores_diccionario)): #Busco cual es la posicion del mayor valor, que se corresponde a la posicion de la palabra
+                
+        if valores_diccionario[indice] > mayor:
+            mayor = valores_diccionario[indice]
+            posicion_palabra_diccionario = indice 
+    
+    return palabras_diccionario[posicion_palabra_diccionario] #La palabra con mayores apariciones es encontrada
+
+
 
 def main(nombre_persona):
 
@@ -18,153 +75,45 @@ def main(nombre_persona):
     archivo_frases = open("./Frases/" + nombre_persona + ".txt", "r")
     archivo_salida = open("./Salidas/" + nombre_persona + ".txt","w")
 
-    linea_frase = archivo_frases.readline() #te _ unos chinos en madrid\n
+    palabras_entrada = archivo_entrada.read() #Leo todas las palabras del archivo de entrada
 
-    while(linea_frase != ''):
+    lista_palabras_entrada = palabras_entrada.split() #Y las ordeno en una lista de una en una
 
-        lista_palabras_frase = linea_frase.split()
+    lineas_frases = archivo_frases.readlines() #Lista con todas las frases
+    
+    for linea_frase in lineas_frases:
 
-        i = 0 # Posicion en lista_palabras
+        linea_frase.replace('\n','') #Se elimina el salto de linea en cada una
 
-        j = 0 # Posicion de "_" que se va a guardar
+        lista_palabras_frase = linea_frase.split() #Separo las palabras de la linea para encontrar la posicion de '_'
 
-        while(i < len(lista_palabras_frase)):
-            if lista_palabras_frase[i] == "_":
-                j = i
-            i += 1
+        posicion_palabra_frase = 0 #Posicion de '_'
 
-        if j == 0: # Caso "_" esta en la primera posicion
+        for indice in range(len(lista_palabras_frase)):
 
-            diccionario_apariciones_palabras = {}
+            if lista_palabras_frase[indice] == '_':
+                posicion_palabra_frase = indice #Encuentro la posicion de la palabra a encontrar
 
-            linea_entrada = archivo_entrada.readline()
-
-            while(linea_entrada != ''):
-
-                lista_palabras_entrada = linea_entrada.split()
-
-                for i in range(0,len(lista_palabras_entrada)):
-
-                    if lista_palabras_entrada[i] == lista_palabras_frase[1]:
-
-                        if not lista_palabras_entrada[i-1] in lista_llaves:
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i-1]] = 1                
-                        else:
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i-1]] += 1
-
-                linea_entrada = archivo_entrada.readline()
+        diccionario_apariciones = crearDiccionario(posicion_palabra_frase,lista_palabras_entrada,lista_palabras_frase)
             
-            #agarrar el mayor valor entre los valores del diccionario y reemplazar "_" por la llave del mayor valor
-
-            lista_valores = list(diccionario_apariciones_palabras.values())
-            lista_llaves = list(diccionario_apariciones_palabras.keys())
-
-            mayor = 0
-            posicion = 0
-
-            for indice in range(0,len(lista_valores)):
-                if lista_valores[indice] > mayor:
-                    mayor = lista_valores[indice]
-                    posicion = indice
-
-            palabra_encontrada = lista_llaves[posicion]
-
-            lista_palabras_frase[0] = palabra_encontrada
-
-            s = ' '.join(lista_palabras_frase) + '\n' # Junto toda la lista en un string junto con el salto de linea
-
-            #queda escribir el string en el nuevo archivo
-
-            archivo_salida.write(s)
-
+        #El diccionario ya se completo, ahora queda ver cual es la palabra con mayor aparicion y reemplazar '_' por la palabra
             
-        elif j == (len(lista_palabras_frase) - 1): # Caso "_" esta en la ultima posicion
+        palabra_encontrada = encontrarPalabra(diccionario_apariciones) #La palabra fue encontrada
 
-            diccionario_apariciones_palabras = {}
+        #Queda reemplazar '_' por la palabra y escribir la frase en el archivo
 
-            linea_entrada = archivo_entrada.readline()
-            
-            while(linea_entrada != ''):
+        lista_palabras_frase[posicion_palabra_frase] = palabra_encontrada #Reemplazo por la palabra encontrada
 
-                lista_palabras_entrada = linea_entrada.split()
+        frase_formada = ' '.join(lista_palabras_frase) + '\n' #Junto las palabras de la frase para formar un string con salto de linea
 
-                for i in range(0,len(lista_palabras_entrada)):
-
-                    if lista_palabras_entrada[i] == lista_palabras_frase[-2]:
-
-                        if not lista_palabras_entrada[i+1] in diccionario_apariciones_palabras.keys():
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i+1]] = 1
-                        else:
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i+1]] += 1
-               
-                linea_entrada = archivo_entrada.readline()
-
-            #agarrar el mayor valor entre los valores del diccionario y reemplazar "_" por la llave del mayor valor
-
-            lista_valores = list(diccionario_apariciones_palabras.values())
-            lista_llaves = list(diccionario_apariciones_palabras.keys())
-
-            mayor = 0
-            posicion = 0
-
-            for indice in range(0,len(lista_valores)):
-                if lista_valores[indice] > mayor:
-                    mayor = lista_valores[indice]
-                    posicion = indice
-
-            palabra_encontrada = lista_llaves[posicion]
-
-            lista_palabras_frase[-1] = palabra_encontrada
-
-            s = ' '.join(lista_palabras_frase) + '\n' # Junto toda la lista en un string junto con el salto de linea
-
-            #queda escribir el string en el nuevo archivo
-
-            archivo_salida.write(s)
-
-
-        else: # Caso "_" no esta ni en la primera ni en la ultima posicion
-
-            diccionario_apariciones_palabras = {}
-
-            linea_entrada = archivo_entrada.readline()
-
-            while(linea_entrada != ''):
-
-                lista_palabras_entrada = linea_entrada.split()
-
-                for i in range(0,len(lista_palabras_entrada)):
-
-                    if lista_palabras_entrada[i] == lista_palabras_frase[j+1]:
-
-                        if not lista_palabras_entrada[i-1] in diccionario_apariciones_palabras.keys():
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i-1]] = 1
-                        else:
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i-1]] += 1
-                    
-                    elif lista_palabras_entrada[i] == lista_palabras_frase[j-1]:
-
-                        if not lista_palabras_entrada[i+1] in diccionario_apariciones_palabras.keys():
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i+1]] = 1
-                        else:
-                            diccionario_apariciones_palabras[lista_palabras_entrada[i+1]] += 1
-                                      
-                linea_entrada = archivo_entrada.readline()
-
-            #agarrar el mayor valor entre los valores del diccionario y reemplazar "_" por la llave del mayor valor
-
-            palabra_encontrada = encontrar_mayor_diccionario(diccionario_apariciones_palabras)
-
-            print(palabra_encontrada)
-
-            lista_palabras_frase[j] = palabra_encontrada
-
-            s = ' '.join(lista_palabras_frase) + '\n' # Junto toda la lista en un string junto con el salto de linea
-
-            #queda escribir el string en el nuevo archivo
-
-            archivo_salida.write(s)
-
+        archivo_salida.write(frase_formada) #Finalmente se escribe en el archivo
+        
     archivo_entrada.close()
     archivo_frases.close()
     archivo_salida.close()
+                
+
+
+            
+        
+        
