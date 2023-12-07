@@ -1,73 +1,86 @@
+import sys
 
-def crearDiccionario(posicion_palabra_frase,lista_palabras_entrada,lista_palabras_frase):
+
+#Cosas que quedan: Random entre palabras
+
+
+def crearDiccionario(posicion,entrada,frase):
 
     diccionario_apariciones = {} #Creo un diccionario de la forma {"Palabra":Apariciones de la palabra}
             
-    for indice in range(len(lista_palabras_entrada)): #Busco la palabra a encontrar
+    for indice in range(len(entrada)): #Busco la palabra a encontrar
         
         #El algoritmo se basa en buscar igualdad de palabra precedente o siguiente de '_' dentro de las palabras de entrada
         #y agregar la palabra siguiente o precedente en entrada, correspondientemente al diccionario junto a su cantidad de
         #apariciones
 
-        if posicion_palabra_frase == 0: #Caso '_' sea la primera palabra
+        if posicion == 0: #Caso '_' sea la primera palabra
 
-            if lista_palabras_entrada[indice] == lista_palabras_frase[1]:
+            if entrada[indice] == frase[1]:
 
-                if not lista_palabras_entrada[indice-1] in diccionario_apariciones:
-                    diccionario_apariciones[lista_palabras_entrada[indice-1]] = 1 
+                if not entrada[indice-1] in diccionario_apariciones:
+                    diccionario_apariciones[entrada[indice-1]] = 1 
                         
                 else:
-                    diccionario_apariciones[lista_palabras_entrada[indice-1]] += 1 
+                    diccionario_apariciones[entrada[indice-1]] += 1 
 
-        elif posicion_palabra_frase == (len(lista_palabras_frase) - 1): #Caso '_' sea la ultima palabra
+        elif posicion == (len(frase) - 1): #Caso '_' sea la ultima palabra
 
-            if lista_palabras_entrada[indice] == lista_palabras_frase[-2]: 
+            if entrada[indice] == frase[-2]: 
 
-                if not lista_palabras_entrada[indice+1] in diccionario_apariciones:
-                    diccionario_apariciones[lista_palabras_entrada[indice+1]] = 1 
+                if not entrada[indice+1] in diccionario_apariciones:
+                    diccionario_apariciones[entrada[indice+1]] = 1 
                         
                 else:
-                    diccionario_apariciones[lista_palabras_entrada[indice+1]] += 1 
+                    diccionario_apariciones[entrada[indice+1]] += 1 
         
         else: # Caso '_' no sea ni la primera ni la ultima palabra
 
-            if lista_palabras_entrada[indice] == lista_palabras_frase[posicion_palabra_frase + 1]:
+            if entrada[indice] == frase[posicion + 1]:
 
-                if not lista_palabras_entrada[indice-1] in diccionario_apariciones:
-                    diccionario_apariciones[lista_palabras_entrada[indice-1]] = 1 
+                if not entrada[indice-1] in diccionario_apariciones:
+                    diccionario_apariciones[entrada[indice-1]] = 1 
                         
                 else:
-                    diccionario_apariciones[lista_palabras_entrada[indice-1]] += 1
+                    diccionario_apariciones[entrada[indice-1]] += 1
 
-            elif lista_palabras_entrada[indice] == lista_palabras_frase[posicion_palabra_frase - 1]:
+            elif entrada[indice] == frase[posicion - 1]:
 
-                if not lista_palabras_entrada[indice+1] in diccionario_apariciones:
-                    diccionario_apariciones[lista_palabras_entrada[indice+1]] = 1 
+                if not entrada[indice+1] in diccionario_apariciones:
+                    diccionario_apariciones[entrada[indice+1]] = 1 
                         
                 else:
-                    diccionario_apariciones[lista_palabras_entrada[indice+1]] += 1
+                    diccionario_apariciones[entrada[indice+1]] += 1
 
     return diccionario_apariciones
 
 
 
-def encontrarPalabra(diccionario_apariciones):
+def encontrarPalabra(dict):
 
-    valores_diccionario = list(diccionario_apariciones.values()) #Creo una lista de los valores
-    palabras_diccionario = list(diccionario_apariciones.keys()) #Y una de sus llaves que son las palabras
+    valores_diccionario = list(dict.values()) #Creo una lista de los valores
+    palabras_diccionario = list(dict.keys()) #Y una de sus llaves que son las palabras
 
-    mayor = 0
-    posicion_palabra_diccionario = 0
+    if len(valores_diccionario) > 0:
 
-    for indice in range(len(valores_diccionario)): #Busco cual es la posicion del mayor valor, que se corresponde a la posicion de la palabra
-                
-        if valores_diccionario[indice] > mayor:
-            mayor = valores_diccionario[indice]
-            posicion_palabra_diccionario = indice 
+        mayor = 0
+        posicion_palabra_diccionario = 0
+
+        for indice in range(len(valores_diccionario)): #Busco cual es la posicion del mayor valor, que se corresponde a la posicion de la palabra
+                    
+            if valores_diccionario[indice] > mayor:
+                mayor = valores_diccionario[indice]
+                posicion_palabra_diccionario = indice 
+        
+        return palabras_diccionario[posicion_palabra_diccionario] #La palabra con mayores apariciones es encontrada
     
-    return palabras_diccionario[posicion_palabra_diccionario] #La palabra con mayores apariciones es encontrada
+    else:
+
+        return 'any' #Si no encuentra ninguna palabra retornara 'any'
+    
 
 
+#Comienza el programa principal 
 
 def main(nombre_persona):
 
@@ -113,7 +126,7 @@ def main(nombre_persona):
     archivo_salida.close()
                 
 
-
+main(sys.argv[1]) #Se ejecuta el programa con el argumento pasado
             
         
         
