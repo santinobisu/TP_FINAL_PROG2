@@ -1,86 +1,5 @@
 import sys
-
-
-#Cosas que quedan: Random entre palabras
-
-
-def crearDiccionario(posicion,entrada,frase):
-
-    diccionario_apariciones = {} #Creo un diccionario de la forma {"Palabra":Apariciones de la palabra}
-            
-    for indice in range(len(entrada)): #Busco la palabra a encontrar
-        
-        #El algoritmo se basa en buscar igualdad de palabra precedente o siguiente de '_' dentro de las palabras de entrada
-        #y agregar la palabra siguiente o precedente en entrada, correspondientemente al diccionario junto a su cantidad de
-        #apariciones
-
-        if posicion == 0: #Caso '_' sea la primera palabra
-
-            if entrada[indice] == frase[1]:
-
-                if not entrada[indice-1] in diccionario_apariciones:
-                    diccionario_apariciones[entrada[indice-1]] = 1 
-                        
-                else:
-                    diccionario_apariciones[entrada[indice-1]] += 1 
-
-        elif posicion == (len(frase) - 1): #Caso '_' sea la ultima palabra
-
-            if entrada[indice] == frase[-2]: 
-
-                if not entrada[indice+1] in diccionario_apariciones:
-                    diccionario_apariciones[entrada[indice+1]] = 1 
-                        
-                else:
-                    diccionario_apariciones[entrada[indice+1]] += 1 
-        
-        else: # Caso '_' no sea ni la primera ni la ultima palabra
-
-            if entrada[indice] == frase[posicion + 1]:
-
-                if not entrada[indice-1] in diccionario_apariciones:
-                    diccionario_apariciones[entrada[indice-1]] = 1 
-                        
-                else:
-                    diccionario_apariciones[entrada[indice-1]] += 1
-
-            elif entrada[indice] == frase[posicion - 1]:
-
-                if not entrada[indice+1] in diccionario_apariciones:
-                    diccionario_apariciones[entrada[indice+1]] = 1 
-                        
-                else:
-                    diccionario_apariciones[entrada[indice+1]] += 1
-
-    return diccionario_apariciones
-
-
-
-def encontrarPalabra(dict):
-
-    valores_diccionario = list(dict.values()) #Creo una lista de los valores
-    palabras_diccionario = list(dict.keys()) #Y una de sus llaves que son las palabras
-
-    if len(valores_diccionario) > 0:
-
-        mayor = 0
-        posicion_palabra_diccionario = 0
-
-        for indice in range(len(valores_diccionario)): #Busco cual es la posicion del mayor valor, que se corresponde a la posicion de la palabra
-                    
-            if valores_diccionario[indice] > mayor:
-                mayor = valores_diccionario[indice]
-                posicion_palabra_diccionario = indice 
-        
-        return palabras_diccionario[posicion_palabra_diccionario] #La palabra con mayores apariciones es encontrada
-    
-    else:
-
-        return 'any' #Si no encuentra ninguna palabra retornara 'any'
-    
-
-
-#Comienza el programa principal 
+from funciones_aux.funciones import *
 
 def main(nombre_persona):
 
@@ -106,14 +25,8 @@ def main(nombre_persona):
 
             if lista_palabras_frase[indice] == '_':
                 posicion_palabra_frase = indice #Encuentro la posicion de la palabra a encontrar
-
-        diccionario_apariciones = crearDiccionario(posicion_palabra_frase,lista_palabras_entrada,lista_palabras_frase)
             
-        #El diccionario ya se completo, ahora queda ver cual es la palabra con mayor aparicion y reemplazar '_' por la palabra
-            
-        palabra_encontrada = encontrarPalabra(diccionario_apariciones) #La palabra fue encontrada
-
-        #Queda reemplazar '_' por la palabra y escribir la frase en el archivo
+        palabra_encontrada = encontrarPalabra(posicion_palabra_frase,lista_palabras_entrada,lista_palabras_frase,1,50) #Se ejecuta la funcion encontrarPalabra que retornara la palabra encontrada
 
         lista_palabras_frase[posicion_palabra_frase] = palabra_encontrada #Reemplazo por la palabra encontrada
 
@@ -123,10 +36,6 @@ def main(nombre_persona):
         
     archivo_entrada.close()
     archivo_frases.close()
-    archivo_salida.close()
-                
+    archivo_salida.close() # Se cierran todos los archivos
 
 main(sys.argv[1]) #Se ejecuta el programa con el argumento pasado
-            
-        
-        

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "./funciones_aux/funciones.c"
 
 // El programa toma un argumento:
 // argc es el numero de argumentos (sera uno solo)
@@ -17,57 +18,24 @@ int main(int argc, char *argv[]){
 
     FILE *lista_de_textos = fopen("archivos.txt","r");
 
-    char direccion_archivo_entrada[255];
-    char linea_archivo_texto[255];
-    char direccion_texto[300];
+    char linea_archivo_texto[255]; // Nombres de los archivos a procesarse
+    char direcciones_entrada[300]; 
+
+    sprintf(direcciones_entrada, "./Entradas/%s.txt",argv[1]); // Direccion del archivo a crearse
+    FILE *entrada = fopen(direcciones_entrada,"w"); // Se abre el archivo de entrada
 
     while(fscanf(lista_de_textos,"%s",linea_archivo_texto) != EOF){
 
-        char direccion_argumento[255]; 
+        sprintf(direcciones_entrada,"./Textos/%s/%s",argv[1],linea_archivo_texto); // Direccion de un archivo de texto escrito en archivos.txt
+    
+        FILE *texto = fopen(direcciones_entrada,"r"); // Se abre el archivo de texto
 
-        sprintf(direccion_texto,"./Textos/%s/%s",argv[1],linea_archivo_texto); // Direccion de un archivo de texto escrito en archivos.txt
-        sprintf(direccion_archivo_entrada, "./Entradas/%s.txt",argv[1]); // Direccion del archivo a crearse
-
-        FILE *texto = fopen(direccion_texto,"r"); // Se abre el archivo de texto
-        FILE *entrada = fopen(direccion_archivo_entrada,"a"); // Se abre el archivo de entrada
-
-        char c = fgetc(texto); // Se tomara caracter por caracter de el texto
-        char caracter_anterior = '\0'; // Y se verificara cual es el caracter anterior para establecer condiciones en ciertos casos especificos
-
-        while(c != EOF){
-
-            if(c >= 97 && c <= 122){ // Caso el caracter es una letra del alfabeto minuscula
-                fputc(c,entrada);
-                caracter_anterior = c;
-            }
-            else if(c >= 65 && c <=90){ // Caso el caracter es una letra del alfabeto mayuscula
-                fputc(c+32,entrada);
-                caracter_anterior = c + 32;
-            }
-            else if(c == '.' && caracter_anterior != '.'){ // Caso el caracter sea un punto, es decir, el fin de una oracion
-                fputc('\n',entrada);
-                caracter_anterior = c;
-            }
-            else if(c == '\n' && caracter_anterior != '.'){ // Caso el caracter es un salto de linea, siempre y cuando no este precedido por un punto
-                fputc(' ',entrada);
-                caracter_anterior = c;
-            }
-            else if(c == ' ' && caracter_anterior != '\n' && caracter_anterior != '.'){ // Caso el caracter es un espacio, siempre y cuando no sea precedido por un salto de linea ni un punto
-                fputc(' ',entrada);
-                caracter_anterior = c;
-            }
-            else if (c >= 48 && c <= 57){ // Caso el caracter es un digito
-                fputc(c,entrada);
-                caracter_anterior = c;
-            }
-
-            c = fgetc(texto); // Actualizo al siguiente caracter
-        }
+        escribirArchivo(texto,entrada);
 
     fclose(texto);
-    fclose(entrada);
-
     }
+
+    fclose(entrada);
     
     fclose(lista_de_textos);
 
