@@ -1,6 +1,5 @@
 from random import randint
 
-
 #palabrasAlrededor: List(String) Int -> List(String)
 
 #palabrasAlrededor toma una lista de string y un entero, y mediante un algoritmo de busqueda
@@ -63,36 +62,34 @@ def crearDiccionario(posicion,entrada,frase,rango,probabilidad): #Creo un diccio
     palabrasDelante = (len(frase)-1)-posicion
     palabrasAtras = posicion
 
-    for palabra in palabras: #Itero sobre la lista de palabras alrededor de '_'
+    for indice in range(len(entrada)): #Y comparo cada una con las palabras de Entrada
 
-        for indice in range(len(entrada)): #Y comparo cada una con las palabras de Entrada
+        if entrada[indice] == palabras[0] and posicion == 0: #Caso se encuentre la palabra y '_' sea la primera palabra
 
-            if entrada[indice] == palabra and posicion == 0: #Caso se encuentre la palabra y '_' sea la primera palabra
+            diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
+        
+        elif entrada[indice] == palabras[0] and posicion == len(frase)-1: #Caso se encuentre la palabra y '_' sea la ultima palabra
 
-                diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
-            
-            elif entrada[indice] == palabra and posicion == len(frase)-1: #Caso se encuentre la palabra y '_' sea la ultima palabra
+            diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
 
-                diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
+        
+        elif entrada[indice] == palabras[0] and palabrasDelante < rango: #Caso se encuentre la palabra y el rango sea mayor a las palabras por delante de '_'
 
-            
-            elif entrada[indice] == palabra and palabrasDelante < rango: #Caso se encuentre la palabra y el rango sea mayor a las palabras por delante de '_'
+            diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
 
-                diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
+        elif entrada[indice] == palabras[0] and palabrasAtras < rango: #Caso se encuentre la palabra y el rango sea mayor a las palabras por detras de '_'
 
-            elif entrada[indice] == palabra and palabrasAtras < rango: #Caso se encuentre la palabra y el rango sea mayor a las palabras por detras de '_'
+            diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
 
-                diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
+        
+        elif len(palabras) > 1 and entrada[indice] == palabras[0]: #Caso se encuentre la palabra y las palabras alrededor de '_' se encuentren en rango, tomando la palabra predecesora
 
-            
-            elif len(palabras) > 1 and entrada[indice] == palabras[0]: #Caso se encuentre la palabra y las palabras alrededor de '_' se encuentren en rango, tomando la palabra predecesora
-                
-                diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
+            diccionario_apariciones[entrada[indice+1]] = diccionario_apariciones.get(entrada[indice+1], 0) + probabilidad
 
-            elif len(palabras) > 1 and entrada[indice] == palabras[1]: #Caso se encuentre la palabra y las palabras alrededor de '_' se encuentren en rango, tomando la palabra consiguiente
+        elif len(palabras) > 1 and entrada[indice] == palabras[1]: #Caso se encuentre la palabra y las palabras alrededor de '_' se encuentren en rango, tomando la palabra consiguiente
 
-                diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
-    
+            diccionario_apariciones[entrada[indice-1]] = diccionario_apariciones.get(entrada[indice-1], 0) + probabilidad
+
     return diccionario_apariciones
 
 
@@ -104,6 +101,7 @@ def crearDiccionario(posicion,entrada,frase,rango,probabilidad): #Creo un diccio
 #cumpla/n la condicion de ser la de mayor valor numerico (apariciones) / mediante una eleccion aleatoria entre ellas.
 
 #Entrada: 0 , ["soy","santino","y","vos"] , ["_","santino"] , 1 , 10    Salida: "soy"
+
 
 def encontrarPalabra(posicion,entrada,frase,rango,probabilidad): #Se encuentra una palabra que cumpla las condiciones para reemplazar '_' en funcion a las palabras de su alrededor
 

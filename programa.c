@@ -11,15 +11,20 @@
 
 int main(int argc, char *argv[]){
 
-    char comando_system[255];
+    if(argc < 2){ // Se verifica que se haya pasado un argumento
+        printf("Ingrese un parámetro al ejecutar el programa.\n");
+        return -1;
+    }
 
-    sprintf(comando_system,"cd ./Textos/%s && ls > ../../archivos.txt", argv[1]); // Copio el argumento recibido en un array de caracteres que sera la linea ejecutada en system
-    system(comando_system); // Se ejecuta la linea almacenada en comando_system, en donde se guardan por cada linea los textos del nombre pasado como parametro
+    if(volcarATexto(argv[1]) == -1){ // Se verifica que el directorio con el argumento pasado exista
+        printf("El directorio con el argumento ingresado no existe.\n");
+        return -1;
+    }
 
-    FILE *lista_de_textos = fopen("archivos.txt","r");
+    FILE *lista_de_textos = fopen("archivos.txt","r"); // Si el directorio anterior existia, se crea archivos.txt y se abre aca
 
     char linea_archivo_texto[255]; // Nombres de los archivos a procesarse
-    char direcciones_entrada[300]; 
+    char direcciones_entrada[300]; // Direcciones de archivos a usarse
 
     sprintf(direcciones_entrada, "./Entradas/%s.txt",argv[1]); // Direccion del archivo a crearse
     FILE *entrada = fopen(direcciones_entrada,"w"); // Se abre el archivo de entrada
@@ -30,9 +35,9 @@ int main(int argc, char *argv[]){
     
         FILE *texto = fopen(direcciones_entrada,"r"); // Se abre el archivo de texto
 
-        escribirArchivo(texto,entrada);
+        escribirArchivo(texto,entrada); // Se utiliza la funcion escribirArchivo, que se encarga de pasar el caracter a carater el texto en limpio a entrada
 
-    fclose(texto);
+    fclose(texto); // Se cierra el archivo de texto que ya no se va a usar
     }
 
     fclose(entrada);

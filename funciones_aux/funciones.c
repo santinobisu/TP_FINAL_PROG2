@@ -2,7 +2,37 @@
 #include <stdlib.h>
 #include <string.h>
 
+int volcarATexto(char *argumento);
 void escribirArchivo(FILE *texto, FILE *entrada);
+
+// volcarATexto: char * -> int
+
+// volcarATexto toma un argumento que sera un char pointer (es decir, un string), y
+// se encarga de verificar si el directorio dentro de la carpeta Textos existe, en cuyo
+// caso vuelca los contenidos de dicho directorio en un texto llamado "archivos.txt" y 
+// devuelve 1, y en caso contrario devuelve -1.
+
+// Entrada: "Fito_Paez"      Salida: 1
+// Entrada: "Sapo"           Salida: -1 
+
+int volcarATexto(char *argumento){
+
+    char comando_system[255];
+    sprintf(comando_system, "./Textos/%s",argumento);
+    FILE *atexto = fopen(comando_system,"r");
+
+    if (!atexto){
+        return -1;
+    }
+
+    fclose(atexto);
+
+    sprintf(comando_system, "cd ./Textos/%s && ls > ../../archivos.txt",argumento);
+
+    system(comando_system);
+
+    return 1;
+}
 
 // escribirArchivo: FILE FILE -> void
 
